@@ -95,7 +95,7 @@ class L2gwRpcDriver(service_drivers.L2gwDriver):
         """
         port_id = port_dict.get("id")
         port = self.service_plugin._core_plugin.get_port(context, port_id)
-        if port['device_owner']:
+        if port['device_owner'] and port['device_owner'] != 'Octavia':
             network_id = port.get("network_id")
             dst_ip, ip_address = self._get_ip_details(context, port)
             network = self._get_network_details(context, network_id)
@@ -232,7 +232,8 @@ class L2gwRpcDriver(service_drivers.L2gwDriver):
                 return
             port_list = [port]
         for port_dict in port_list:
-            if port_dict['device_owner']:
+            if port_dict['device_owner'] \
+                    and port_dict['device_owner'] != 'Octavia':
                 if logical_switches:
                     for logical_switch in logical_switches:
                         logical_switch_uuid = logical_switch.get('uuid')
@@ -698,7 +699,8 @@ class L2gwRpcDriver(service_drivers.L2gwDriver):
                     LOG.debug("L2gwRpcDriver.update_l2_gw: ports=%s", ports)
                     for port in ports:
                         mac_list = []
-                        if port['device_owner']:
+                        if port['device_owner'] \
+                                and port['device_owner'] != 'Octavia':
                             dst_ip, ip_address = self._get_ip_details(context,
                                                                       port)
                             mac_ip_pairs = []
@@ -789,7 +791,7 @@ class L2gwRpcDriver(service_drivers.L2gwDriver):
                                            gw_connection.get('network_id'))
             for port in ports:
                 mac_list = []
-                if port['device_owner']:
+                if port['device_owner'] and port['device_owner'] != 'Octavia':
                     dst_ip, ip_address = self._get_ip_details(context, port)
                     mac_ip_pairs = []
                     if isinstance(port.get("allowed_address_pairs"), list):
